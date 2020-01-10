@@ -9,6 +9,7 @@
 #include <utility>
 #include <fstream>
 #include <algorithm>
+#include <sstream>
 
 #include "DictionaryCommon.h"
 #include "STLDictionary.h"
@@ -36,7 +37,13 @@ public:
                 return std::ispunct(c) and c != '\'' ;
             },' ');
 
-            
+            std::istringstream iss(line);
+            std::string item;
+            while (std::getline(iss, item, ' ')) {
+                if (item.empty())
+                    continue;
+                
+            }
         }
     }
 };
