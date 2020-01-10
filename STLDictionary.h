@@ -23,7 +23,7 @@ public:
         this->data.insert(value);
     }
 
-    bool find(const std::string &value) {
+    bool find(const std::string &value) const {
         return this->data.find(value) != this->data.end();
     }
 };
