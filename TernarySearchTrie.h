@@ -30,7 +30,8 @@ class TernarySearchTrie : public DictionaryCommon {
 
 public:
 
-    TernarySearchTrie() {
+    TernarySearchTrie(const std::string &filename) {
+        this->readFromFile(filename);
         root = nullptr;
     }
 
