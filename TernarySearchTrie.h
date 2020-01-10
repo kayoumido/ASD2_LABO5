@@ -52,7 +52,7 @@ public:
      * @param word
      * @return
      */
-    bool find(std::string word) {
+    bool find(const std::string &word) override {
         findInTrie(root, word);
     }
 
