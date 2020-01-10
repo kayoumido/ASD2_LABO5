@@ -17,6 +17,10 @@ protected:
     // lecture depuis un fichier.
     void readFromFile(const std::string& filename) {
         std::ifstream s(filename);
+
+        if (!s.is_open())
+            throw std::runtime_error("Unable to open file");
+
         this->readFromStream(s);
         s.close();
     }
