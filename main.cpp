@@ -1,6 +1,12 @@
 #include <iostream>
+#include <STLDictionary.h>
+
+using namespace std;
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+
+    STLDictionary dict("data/small_dict.txt");
+
+    cout << dict.find("afterward");
     return 0;
 }
