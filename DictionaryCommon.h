@@ -12,21 +12,18 @@ class DictionaryCommon {
 
 public:
     virtual void insert(std::string value) = 0;
-
+    virtual bool find(const std::string &value) = 0;
 protected:
-    // lecture depuis un fichier.
     void readFromFile(const std::string& filename) {
         std::ifstream s(filename);
 
         if (!s.is_open())
-            throw std::runtime_error("Unable to open file");
+            throw std::runtime_error("Unable to open file " + filename);
 
         this->readFromStream(s);
         s.close();
     }
 
-    // lecture depuis un stream. Utilise addEdge(...)
-    // a definir par les classe fille
     void readFromStream(std::istream& s) {
         std::string value;
         while (getline(s, value)) {
