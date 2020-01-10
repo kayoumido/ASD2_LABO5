@@ -8,9 +8,9 @@
 
 #include <set>
 #include <string>
-#include "DictionaryCommon.h"
+#include "Dictionary.h"
 
-class STLDictionary : public DictionaryCommon {
+class STLDictionary : public Dictionary {
 private:
     std::set<std::string> data;
 
@@ -23,7 +23,7 @@ public:
         this->data.insert(value);
     }
 
-    bool find(const std::string &value) const {
+    bool find(const std::string &value) override {
         return this->data.find(value) != this->data.end();
     }
 };

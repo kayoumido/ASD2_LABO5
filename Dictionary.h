@@ -2,13 +2,13 @@
 // Created by ducky on 10.01.20.
 //
 
-#ifndef LABO05_DICTIONARYCOMMON_H
-#define LABO05_DICTIONARYCOMMON_H
+#ifndef LABO05_DICTIONARY_H
+#define LABO05_DICTIONARY_H
 
 #include <string>
 #include <fstream>
 
-class DictionaryCommon {
+class Dictionary {
 
 public:
     virtual void insert(std::string value) = 0;
@@ -32,4 +32,4 @@ protected:
     }
 };
 
-#endif //LABO05_DICTIONARYCOMMON_H
+#endif //LABO05_DICTIONARY_H

@@ -5,4 +5,4 @@ include_directories(.)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(Labo05 main.cpp AVLTree.h BinarySearchTree.h STLDictionary.h DictionaryCommon.h Spellchecker.h TernarySearchTrie.h)
+add_executable(Labo05 main.cpp AVLTree.h BinarySearchTree.h STLDictionary.h Dictionary.h Spellchecker.h TernarySearchTrie.h)

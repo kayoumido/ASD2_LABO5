@@ -6,9 +6,9 @@
 #define LABO05_TERNARYSEARCHTRIE_H
 
 #include <string>
-#include "DictionaryCommon.h"
+#include "Dictionary.h"
 
-class TernarySearchTrie : public DictionaryCommon {
+class TernarySearchTrie : public Dictionary {
 
     class Node {
     public:
