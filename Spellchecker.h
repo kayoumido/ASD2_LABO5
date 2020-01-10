@@ -14,42 +14,61 @@
 #include <sstream>
 #include <vector>
 
-#include "DictionaryCommon.h"
+#include "Dictionary.h"
 #include "STLDictionary.h"
 
+template <typename Dict>
 class Spellchecker {
-private:
-    DictionaryCommon *dict;
+    Dict dict;
     std::string toCorrect;
+    static const char DELIMITER = ' ';
+
+    std::string cleanPhrase(const std::string &phrase) {
+        std::string cleaned;
+        cleaned = phrase;
+
+        // replace all the special chars by a space
+        // as specified in the given, the ' is kept
+        std::replace_if(cleaned.begin(), cleaned.end(), [] (const char& c) {
+            return (std::ispunct(c) or c == '-') and c != '\'' ;
+        }, ' '); // for some reason the static const doesn't work \o/
+
+        std::transform(cleaned.begin(), cleaned.end(), cleaned.begin(), [](unsigned char c) {
+            return std::tolower(c);
+        });
+
+        return cleaned;
+    }
 
 public:
-    Spellchecker(std::string toCorrect, bool useSTL) : toCorrect(std::move(toCorrect)) {
-        STLDictionary STLDict("data/dictionary");
-        dict = &STLDict;
-    }
+    Spellchecker(const std::string &toCorrect, const Dict &dict) : toCorrect(toCorrect), dict(dict) {}
 
     void correct() {
         std::ifstream s(this->toCorrect);
 
         if (!s.is_open())
-            throw std::runtime_error("Unable to open file");
+            throw std::runtime_error("Unable to open file " + this->toCorrect);
 
         std::string line;
+        std::vector<std::string> suggestions;
         while (getline(s, line)) {
-            std::replace_if(line.begin(), line.end(),[] (const char& c) {
-                return std::ispunct(c) and c != '\'' ;
-            },' ');
+            line = cleanPhrase(line);
 
+            // split the line into words
             std::istringstream iss(line);
-            std::string item;
-            while (std::getline(iss, item, ' ')) {
-                if (item.empty())
+            std::string word;
+            while (std::getline(iss, word, Spellchecker::DELIMITER)) {
+
+                if (word.empty())
                     continue;
-                
+
+                if (!dict.find(word)){
+                    std::cout << "*" << word << std::endl;
+                    checkMisspelledWord(word);
+                }
             }
         }
     }
-
 
 private:
     std::vector<std::string> wroteAnExtraLetter(const std::string &initialWord, const STLDictionary &dict){
