@@ -13,6 +13,7 @@
 #include <algorithm>
 #include <sstream>
 #include <vector>
+#include <iostream>
 
 #include "Dictionary.h"
 #include "STLDictionary.h"
@@ -44,27 +45,38 @@ public:
     Spellchecker(const std::string &toCorrect, const Dict &dict) : toCorrect(toCorrect), dict(dict) {}
 
     void correct() {
-        std::ifstream s(this->toCorrect);
+        std::vector<std::string> suggestions;
+        std::ifstream inputFile(this->toCorrect);
+        std::ofstream outputFile("data/output.txt");
 
-        if (!s.is_open())
+        if (!inputFile.is_open())
             throw std::runtime_error("Unable to open file " + this->toCorrect);
 
+        if(!outputFile)
+            throw std::runtime_error("Unable to open the output file");
+
+        // Read file  line by line
         std::string line;
-        std::vector<std::string> suggestions;
-        while (getline(s, line)) {
+        while (getline(inputFile, line)) {
+
+            // Clean the line
             line = cleanPhrase(line);
 
             // split the line into words
             std::istringstream iss(line);
             std::string word;
+            // keskesafait ? mais des caumentère
             while (std::getline(iss, word, Spellchecker::DELIMITER)) {
 
                 if (word.empty())
                     continue;
 
                 if (!dict.find(word)) {
-                    std::cout << "*" << word << std::endl;
-                    checkMisspelledWord(word);
+                    outputFile << "*" << word << "\n";
+                    suggestions = checkMisspelledWord(word);
+                    for(std::string& suggestion : suggestions){
+                        outputFile << suggestion << "\n";
+                    }
                 }
             }
         }
@@ -164,13 +176,6 @@ private:
         suggestions.insert(suggestions.end(), b.begin(), b.end());
         suggestions.insert(suggestions.end(), c.begin(), c.end());
         suggestions.insert(suggestions.end(), d.begin(), d.end());
-
-        // TODO REM
-        // DEBUG CODE
-        for (std::string sugg : suggestions) {
-            std::cout << sugg << std::endl;
-        }
-        std::cout << std::endl;
 
         return suggestions;
     }
