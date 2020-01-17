@@ -1,8 +1,10 @@
-#include <utility>
+/**
+ * Authors: Robin Demarta, Loïc Dessaules, Doran Kayoumi
+ * File: SpellChecker.h
+ * Date: 10.01.2019
+ */
 
-//
-// Created by ducky on 10.01.20.
-//
+#include <utility>
 
 #ifndef LABO05_SPELLCHECKER_H
 #define LABO05_SPELLCHECKER_H

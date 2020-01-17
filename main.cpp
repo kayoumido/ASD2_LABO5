@@ -1,3 +1,9 @@
+/**
+ * Authors: Robin Demarta, Loïc Dessaules, Doran Kayoumi
+ * File: main.cpp
+ * Date: 10.01.2019
+ */
+
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -7,7 +13,7 @@
 #include "Spellchecker.h"
 #include <chrono>
 
-#define USE_STL 0
+#define USE_STL 1 // If 1, TernarySearchTrie will be used
 
 using namespace std;
 

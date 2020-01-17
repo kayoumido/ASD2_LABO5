@@ -1,6 +1,8 @@
-//
-// Created by rdema on 10.01.2020.
-//
+/**
+ * Authors: Robin Demarta, Loïc Dessaules, Doran Kayoumi
+ * File: TernarySearchTrie.h
+ * Date: 10.01.2019
+ */
 
 #ifndef LABO05_TERNARYSEARCHTRIE_H
 #define LABO05_TERNARYSEARCHTRIE_H
@@ -13,16 +15,18 @@ class TernarySearchTrie : public Dictionary {
 
     struct Node {
     public:
+        // Subtrees
         Node* left;
         Node* middle;
         Node* right;
+
         char value;
         bool endOfWorld; // Indicates that this node (char) is the end of a word
         int nodeHeight;
         int nodeSize;
 
-        Node(Node* left, Node* middle, Node* right, char value, bool endOfWorld) : left(left), middle(middle), right(right),
-                                                                                   value(value), endOfWorld(endOfWorld) {}
+        Node(Node* left, Node* middle, Node* right, char value, bool endOfWorld)
+        : left(left), middle(middle), right(right), value(value), endOfWorld(endOfWorld), nodeSize(1), nodeHeight(0) {}
     };
 
     Node* root;
@@ -38,6 +42,10 @@ public:
         deleteSubTree(root);
     }
 
+    /**
+     * Recursive function to delete all subtree nodes
+     * @param x
+     */
     void deleteSubTree(Node* x) {
         if(x == nullptr) return;
         deleteSubTree(x->right);
@@ -114,10 +122,11 @@ private:
             // Same letter: ignore it and continue
             node->middle =  insertInTrie(node->middle, word.substr(1, word.length() - 1));
 
-        //updateNodeSize(node);
-        //return restoreBalance(node);
-        return node;
+        updateNodeSize(node);
+        return restoreBalance(node);
     }
+
+    /* The following functions have been taken from the AVLTree file */
 
     int height(Node* x) {
         if ( x == nullptr )

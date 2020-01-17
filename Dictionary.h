@@ -1,6 +1,8 @@
-//
-// Created by ducky on 10.01.20.
-//
+/**
+ * Authors: Robin Demarta, Loïc Dessaules, Doran Kayoumi
+ * File: Dictionary.h
+ * Date: 10.01.2019
+ */
 
 #ifndef LABO05_DICTIONARY_H
 #define LABO05_DICTIONARY_H
