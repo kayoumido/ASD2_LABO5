@@ -7,6 +7,7 @@
 
 #include <string>
 #include "Dictionary.h"
+#include "AVLTree.h"
 
 class TernarySearchTrie : public Dictionary {
 
@@ -17,6 +18,8 @@ class TernarySearchTrie : public Dictionary {
         Node* right;
         char value;
         bool endOfWorld; // Indicates that this node (char) is the end of a word
+        int nodeHeight;
+        int nodeSize;
 
         Node(Node* left, Node* middle, Node* right, char value, bool endOfWorld) : left(left), middle(middle), right(right),
                                                                                    value(value), endOfWorld(endOfWorld) {}
@@ -48,7 +51,7 @@ public:
      * @param word
      */
     void insert(std::string word) override {
-        insertInTrie(root, word);
+        root = insertInTrie(root, word);
     }
 
     /**
@@ -91,17 +94,17 @@ private:
      * @param node
      * @param word
      */
-    void insertInTrie(Node*& node, std::string word) {
+    Node* insertInTrie(Node* node, std::string word) {
 
         if(node == nullptr)
             // Empty: insert node
             node = new Node(nullptr, nullptr, nullptr, word[0], false);
         if(word[0] < node->value)
             // Left
-            insertInTrie(node->left, word);
+            node->left = insertInTrie(node->left, word);
         else if(word[0] > node->value)
             // Right
-            insertInTrie(node->right, word);
+            node->right = insertInTrie(node->right, word);
         else
             // Middle
         if(word.length() == 1)
@@ -109,7 +112,78 @@ private:
             node->endOfWorld = true;
         else
             // Same letter: ignore it and continue
-            insertInTrie(node->middle, word.substr(1, word.length() - 1));
+            node->middle =  insertInTrie(node->middle, word.substr(1, word.length() - 1));
+
+        //updateNodeSize(node);
+        //return restoreBalance(node);
+        return node;
+    }
+
+    int height(Node* x) {
+        if ( x == nullptr )
+            return -1;
+        return x->nodeHeight;
+    }
+
+    int balance(Node* x) {
+        if(x==nullptr) return 0;
+        return height(x->left) - height(x->right);
+    }
+
+    Node* restoreBalance(Node* x) {
+
+        if(balance(x) < -1) // left < right-1
+        {
+            if (balance(x->right)>0)
+                x->right = rotateRight( x->right );
+            x = rotateLeft(x);
+        }
+        else if( balance(x) > 1) // left > right+1
+        {
+            if ( balance(x->left) < 0 )
+                x->left = rotateLeft( x->left );
+            x = rotateRight(x);
+        }
+        else updateNodeHeight(x);
+        return x;
+    }
+
+    void updateNodeHeight(Node* x) {
+        x->nodeHeight = std::max(height(x->right),height(x->left)) + 1;
+    }
+
+    Node* rotateRight(Node* x) {
+        Node* y = x->left;
+        x->left = y->right;
+        y->right = x;
+
+        y->nodeSize = x->nodeSize;
+        updateNodeSize(x);
+
+        updateNodeHeight(x);
+        updateNodeHeight(y);
+        return y;
+    }
+
+    Node* rotateLeft(Node* x) {
+        Node* y = x->right;
+        x->right = y->left;
+        y->left = x;
+
+        y->nodeSize = x->nodeSize;
+        updateNodeSize(x);
+
+        updateNodeHeight(x);
+        updateNodeHeight(y);
+        return y;
+    }
+
+    void updateNodeSize(Node* x) {
+        x->nodeSize = size(x->right) + size(x->left) + 1;
+    }
+
+    int size(Node* x) {
+        return ( x == nullptr ) ? 0 : x->nodeSize;
     }
 };
 

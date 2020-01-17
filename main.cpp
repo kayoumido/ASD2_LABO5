@@ -7,7 +7,7 @@
 #include "Spellchecker.h"
 #include <chrono>
 
-#define USE_STL 1
+#define USE_STL 0
 
 using namespace std;
 
@@ -16,7 +16,7 @@ int main() {
     chrono::high_resolution_clock::duration dictLoadTime;
     chrono::high_resolution_clock::duration correctionTime;
 
-    string fileToCorrect = "input_wikipedia.txt";
+    string fileToCorrect = "input_sh.txt";
     string dict = "dictionary.txt";
 
 #if USE_STL
