@@ -107,16 +107,23 @@ private:
 
         // Loop through each letter of the inital word
         for (int i = 0; i <= initialWord.size(); ++i) {
-            // Loop throuhgh each alphabet letter
+            std::string cpy;
+            // Loop through each alphabet letter
             for (char letterToAdd = 'a'; letterToAdd <= 'z'; ++letterToAdd) {
                 // Generate the word with an extra letter at current i pos
-                std::string cpy = initialWord;
+                cpy = initialWord;
                 std::string strLetter(1, letterToAdd);
-                //cout << cpy.insert(i, strLetter) << endl;
                 cpy.insert(i, strLetter);
                 if (dict.find(cpy)) {
                     wordsSuggestion.push_back(cpy.insert(0, prefix));
                 }
+            }
+
+            // Generate the word with an extra quote character at current i pos
+            cpy = initialWord;
+            cpy.insert(i, "'");
+            if (dict.find(cpy)) {
+                wordsSuggestion.push_back(cpy.insert(0, prefix));
             }
         }
 
@@ -129,10 +136,11 @@ private:
 
         // Loop through each letter of the inital word
         for (int i = 0; i < initialWord.size(); ++i) {
+            std::string cpy;
             // Loop throuhgh each alphabet letter
             for (char letterToAdd = 'a'; letterToAdd <= 'z'; ++letterToAdd) {
                 // Generate the word with an extra letter in place of the current i pos letter
-                std::string cpy = initialWord;
+                cpy = initialWord;
                 std::string strLetter(1, letterToAdd); // Cast letter in string
                 // Erase the letter at the i pos and add the new one
                 cpy.erase(i, 1);
@@ -141,6 +149,14 @@ private:
                 if (dict.find(cpy)) {
                     wordsSuggestion.push_back(cpy.insert(0, prefix));
                 }
+            }
+
+            // Generate the word with an extra quote character in place of the current i pos letter
+            cpy = initialWord;
+            cpy.erase(i, 1);
+            cpy.insert(i, "'");
+            if (dict.find(cpy)) {
+                wordsSuggestion.push_back(cpy.insert(0, prefix));
             }
         }
 

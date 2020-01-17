@@ -7,6 +7,7 @@
 
 #include <string>
 #include <fstream>
+#include <algorithm>
 
 class Dictionary {
 
@@ -27,9 +28,19 @@ protected:
     void readFromStream(std::istream& s) {
         std::string value;
         while (getline(s, value)) {
-            this->insert(value);
+            this->insert(toLower(value));
         }
     }
+
+private :
+    std::string toLower(std::string word){
+        std::transform(word.begin(), word.end(), word.begin(), [](unsigned char c) {
+            return std::tolower(c);
+        });
+
+        return word;
+    }
+
 };
 
 #endif //LABO05_DICTIONARY_H

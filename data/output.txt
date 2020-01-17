@@ -20,6 +20,7 @@
 3:hates
 3:mates
 3:nates
+3:oates
 3:pates
 3:rates
 3:sates
@@ -38,11 +39,16 @@
 3:lares
 3:lases
 3:laves
+3:lawes
 3:laxes
 3:lazes
 3:laths
+3:latis
 3:latus
+3:lat's
+3:latea
 3:lated
 3:laten
 3:later
 3:latex
+4:altes
