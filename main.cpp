@@ -12,16 +12,13 @@ using namespace std;
 
 int main() {
 
-    string inputFile = "data/input_lates.txt";
-
-
-    #if USE_STL
-        STLDictionary stldict("data/dictionary.txt");
-        Spellchecker<STLDictionary> sc("data/input_lates.txt", stldict);
-    #else
-        TernarySearchTrie tst("data/dictionary.txt");
-        Spellchecker<TernarySearchTrie> sc("data/input_lates.txt", tst);
-    #endif
+#if USE_STL
+    STLDictionary stldict("data/dictionary.txt");
+    Spellchecker<STLDictionary> sc("data/input_wikipedia.txt", stldict);
+#else
+    TernarySearchTrie tst("data/dictionary.txt");
+    Spellchecker<TernarySearchTrie> sc("data/input_lates.txt", tst);
+#endif
 
     sc.correct();
 

@@ -29,9 +29,9 @@ class Spellchecker {
         cleaned = phrase;
 
         // replace all the special chars by a space
-        // as specified in the given, the ' is kept
+        // as specified in the given, the `'` is kept
         std::replace_if(cleaned.begin(), cleaned.end(), [](const char &c) {
-            return (std::ispunct(c) or c == '-') and c != '\'';
+            return !std::isalpha(c) and c != '\'';
         }, ' '); // for some reason the static const doesn't work \o/
 
         std::transform(cleaned.begin(), cleaned.end(), cleaned.begin(), [](unsigned char c) {
@@ -68,7 +68,7 @@ public:
             // keskesafait ? mais des caumentère
             while (std::getline(iss, word, Spellchecker::DELIMITER)) {
 
-                if (word.empty())
+                if (word.empty() or (word[0] == '\'' or word[word.length()-1] == '\''))
                     continue;
 
                 if (!dict.find(word)) {
