@@ -62,18 +62,21 @@ public:
             // Clean the line
             line = cleanPhrase(line);
 
-            // split the line into words
+            // loop through all the words of a line
             std::istringstream iss(line);
             std::string word;
-            // keskesafait ? mais des caumentère
             while (std::getline(iss, word, Spellchecker::DELIMITER)) {
-
+                // ignore any word that is empty or if it's surrounded by `'`
                 if (word.empty() or (word[0] == '\'' or word[word.length()-1] == '\''))
                     continue;
 
+                // check the word is in the dictionary
                 if (!dict.find(word)) {
                     outputFile << "*" << word << "\n";
+                    // check for word alternatives
                     suggestions = checkMisspelledWord(word);
+
+                    // save suggestions in an output file
                     for(std::string& suggestion : suggestions){
                         outputFile << suggestion << "\n";
                     }
