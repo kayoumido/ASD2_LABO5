@@ -24,16 +24,25 @@ class Spellchecker {
     std::string toCorrect;
     static const char DELIMITER = ' ';
 
-    std::string cleanPhrase(const std::string &phrase) {
-        std::string cleaned;
-        cleaned = phrase;
+    std::string sanitize(const std::string &phrase) {
+        std::string cleaned = phrase;
 
-        // replace all the special chars by a space
-        // as specified in the given, the `'` is kept
-        std::replace_if(cleaned.begin(), cleaned.end(), [](const char &c) {
-            return !std::isalpha(c) and c != '\'';
-        }, ' '); // for some reason the static const doesn't work \o/
+        for (int i = 0; i < cleaned.length(); ++i) {
+            char c = cleaned[i];
 
+            // check if the current char is valid.
+            // i.e. it's an alpha or a `'`
+            if (!std::isalpha(c) and c != '\'') {
+                cleaned.replace(i, 1, " ");
+                continue;
+            }
+
+            // if the current char is a `'`, check that the surrounding chars are valid ones
+            if (c == '\'' and (!isalpha(cleaned[i-1]) or !isalpha(cleaned[i+1])))
+                cleaned.replace(i, 1, " ");
+        }
+
+        // to lower the cleaned phrase
         std::transform(cleaned.begin(), cleaned.end(), cleaned.begin(), [](unsigned char c) {
             return std::tolower(c);
         });
@@ -60,14 +69,14 @@ public:
         while (getline(inputFile, line)) {
 
             // Clean the line
-            line = cleanPhrase(line);
+            line = sanitize(line);
 
             // loop through all the words of a line
             std::istringstream iss(line);
             std::string word;
             while (std::getline(iss, word, Spellchecker::DELIMITER)) {
                 // ignore any word that is empty or if it's surrounded by `'`
-                if (word.empty() or (word[0] == '\'' or word[word.length()-1] == '\''))
+                if (word.empty())
                     continue;
 
                 // check the word is in the dictionary
