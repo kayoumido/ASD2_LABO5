@@ -24,13 +24,13 @@ int main() {
     STLDictionary stldict("data/" + dict);
     dictLoadTime = chrono::high_resolution_clock::now() - start;
 
-    Spellchecker<STLDictionary> sc("data/" + fileToCorrect, stldict);
+    Spellchecker<STLDictionary> sc("data/" + fileToCorrect, &stldict);
 #else
     start = chrono::high_resolution_clock::now();
     TernarySearchTrie tst("data/" + dict);
     dictLoadTime = chrono::high_resolution_clock::now() - start;
     
-    Spellchecker<TernarySearchTrie> sc("data/" + fileToCorrect, tst);
+    Spellchecker<TernarySearchTrie> sc("data/" + fileToCorrect, &tst);
 #endif
 
     start = chrono::high_resolution_clock::now();

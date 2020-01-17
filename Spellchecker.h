@@ -20,7 +20,7 @@
 
 template<typename Dict>
 class Spellchecker {
-    Dict dict;
+    Dict* dict;
     std::string toCorrect;
     static const char DELIMITER = ' ';
 
@@ -42,7 +42,7 @@ class Spellchecker {
     }
 
 public:
-    Spellchecker(const std::string &toCorrect, const Dict &dict) : toCorrect(toCorrect), dict(dict) {}
+    Spellchecker(const std::string &toCorrect, Dict* dict) : toCorrect(toCorrect), dict(dict) {}
 
     void correct() {
         std::vector<std::string> suggestions;
@@ -71,7 +71,7 @@ public:
                     continue;
 
                 // check the word is in the dictionary
-                if (!dict.find(word)) {
+                if (!dict->find(word)) {
                     outputFile << "*" << word << "\n";
                     // check for word alternatives
                     suggestions = checkMisspelledWord(word);
@@ -96,7 +96,7 @@ private:
             std::string cpy = initialWord;
             //cout << cpy.erase(i,1) << endl;
             cpy.erase(i, 1);
-            if (dict.find(cpy)) {
+            if (dict->find(cpy)) {
                 wordsSuggestion.push_back(cpy.insert(0, prefix));
             }
         }
@@ -117,7 +117,7 @@ private:
                 cpy = initialWord;
                 std::string strLetter(1, letterToAdd);
                 cpy.insert(i, strLetter);
-                if (dict.find(cpy)) {
+                if (dict->find(cpy)) {
                     wordsSuggestion.push_back(cpy.insert(0, prefix));
                 }
             }
@@ -125,7 +125,7 @@ private:
             // Generate the word with an extra quote character at current i pos
             cpy = initialWord;
             cpy.insert(i, "'");
-            if (dict.find(cpy)) {
+            if (dict->find(cpy)) {
                 wordsSuggestion.push_back(cpy.insert(0, prefix));
             }
         }
@@ -149,7 +149,7 @@ private:
                 cpy.erase(i, 1);
                 cpy.insert(i, strLetter);
 
-                if (dict.find(cpy)) {
+                if (dict->find(cpy)) {
                     wordsSuggestion.push_back(cpy.insert(0, prefix));
                 }
             }
@@ -158,7 +158,7 @@ private:
             cpy = initialWord;
             cpy.erase(i, 1);
             cpy.insert(i, "'");
-            if (dict.find(cpy)) {
+            if (dict->find(cpy)) {
                 wordsSuggestion.push_back(cpy.insert(0, prefix));
             }
         }
@@ -176,7 +176,7 @@ private:
             std::string cpy = initialWord;
             std::swap(cpy[i], cpy[i + 1]);
 
-            if (dict.find(cpy)) {
+            if (dict->find(cpy)) {
                 wordsSuggestion.push_back(cpy.insert(0, prefix));
             }
         }

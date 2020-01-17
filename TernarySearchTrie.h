@@ -10,33 +10,37 @@
 
 class TernarySearchTrie : public Dictionary {
 
-    class Node {
+    struct Node {
     public:
         Node* left;
         Node* middle;
-        Node*  right;
+        Node* right;
         char value;
         bool endOfWorld; // Indicates that this node (char) is the end of a word
 
-        Node(Node* left, Node* middle, Node* right, char value, bool endOfWorld) : left(left), middle(middle), right(right), value(value), endOfWorld(endOfWorld) {}
-        ~Node() {
-            delete left;
-            delete middle;
-            delete right;
-        }
+        Node(Node* left, Node* middle, Node* right, char value, bool endOfWorld) : left(left), middle(middle), right(right),
+                                                                                   value(value), endOfWorld(endOfWorld) {}
     };
 
     Node* root;
 
 public:
 
-    TernarySearchTrie(const std::string &filename) {
-        this->readFromFile(filename);
+    TernarySearchTrie(const std::string& filename) {
         root = nullptr;
+        this->readFromFile(filename);
     }
 
     ~TernarySearchTrie() {
-        delete root;
+        deleteSubTree(root);
+    }
+
+    void deleteSubTree(Node* x) {
+        if(x == nullptr) return;
+        deleteSubTree(x->right);
+        deleteSubTree(x->left);
+        deleteSubTree(x->middle);
+        delete x;
     }
 
     /**
@@ -52,8 +56,8 @@ public:
      * @param word
      * @return
      */
-    bool find(const std::string &word) override {
-        findInTrie(root, word);
+    bool find(const std::string& word) override {
+        return findInTrie(root, word);
     }
 
 private:
@@ -65,8 +69,6 @@ private:
     bool findInTrie(Node* node, std::string word) {
         if(node == nullptr)
             return false;
-
-        std::string newWord = word.substr(1, word.length() - 1); // Remove first char
 
         if(word[0] < node->value)
             // Left
@@ -80,8 +82,8 @@ private:
             // Last letter: must be end of the word
             return node->endOfWorld;
 
-        // Middle
-        return findInTrie(node->middle, newWord);
+        // Middle (remove first letter and continue)
+        return findInTrie(node->middle, word.substr(1, word.length() - 1));
     }
 
     /**
@@ -89,12 +91,12 @@ private:
      * @param node
      * @param word
      */
-    void insertInTrie(Node* node, std::string word) {
+    void insertInTrie(Node*& node, std::string word) {
 
         if(node == nullptr)
             // Empty: insert node
             node = new Node(nullptr, nullptr, nullptr, word[0], false);
-        else if(word[0] < node->value)
+        if(word[0] < node->value)
             // Left
             insertInTrie(node->left, word);
         else if(word[0] > node->value)
@@ -102,12 +104,12 @@ private:
             insertInTrie(node->right, word);
         else
             // Middle
-            if(word.length() == 1)
-                // No more letters
-                node->endOfWorld = true;
-            else
-                // Same letter: ignore it and continue
-                insertInTrie(node->middle, word.substr(1, word.length() - 1));
+        if(word.length() == 1)
+            // No more letters
+            node->endOfWorld = true;
+        else
+            // Same letter: ignore it and continue
+            insertInTrie(node->middle, word.substr(1, word.length() - 1));
     }
 };
 
