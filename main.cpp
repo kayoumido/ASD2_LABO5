@@ -13,7 +13,9 @@
 #include "Spellchecker.h"
 #include <chrono>
 
-#define USE_STL 1 // If 1, TernarySearchTrie will be used
+// 0 to use the Ternary Search Trie
+// 1 to use the STL container
+#define USE_STL 1
 
 using namespace std;
 

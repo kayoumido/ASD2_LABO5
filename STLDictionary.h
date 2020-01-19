@@ -8,13 +8,13 @@
 #define LABO05_STLDICTIONARY_H
 
 
-#include <set>
+#include <unordered_set>
 #include <string>
 #include "Dictionary.h"
 
 class STLDictionary : public Dictionary {
 private:
-    std::set<std::string> data;
+    std::unordered_set<std::string> data;
 
 public:
     STLDictionary(const std::string &filename) {
