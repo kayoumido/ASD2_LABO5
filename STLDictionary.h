@@ -14,6 +14,8 @@
 
 class STLDictionary : public Dictionary {
 private:
+    // We've decided to use an unordered_set to contain the dictionary
+    // because it has a search and insert complexity of 0(1)
     std::unordered_set<std::string> data;
 
 public:
