@@ -12,10 +12,10 @@
 #include <algorithm>
 
 class Dictionary {
-
 public:
-    virtual void insert(std::string value) = 0;
+    virtual void insert(const std::string& value) = 0;
     virtual bool find(const std::string &value) = 0;
+
 protected:
     void readFromFile(const std::string& filename) {
         std::ifstream s(filename);

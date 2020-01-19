@@ -8,10 +8,9 @@
 #define LABO05_TERNARYSEARCHTRIE_H
 
 #include <string>
-#include "Dictionary.h"
 #include "AVLTree.h"
 
-class TernarySearchTrie : public Dictionary {
+class TernarySearchTrie {
 
     struct Node {
     public:
@@ -33,9 +32,8 @@ class TernarySearchTrie : public Dictionary {
 
 public:
 
-    TernarySearchTrie(const std::string& filename) {
+    TernarySearchTrie() {
         root = nullptr;
-        this->readFromFile(filename);
     }
 
     ~TernarySearchTrie() {
@@ -58,7 +56,7 @@ public:
      * Public function to insert a new word in the TST
      * @param word
      */
-    void insert(std::string word) override {
+    void insert(const std::string& word) {
         root = insertInTrie(root, word);
     }
 
@@ -67,7 +65,7 @@ public:
      * @param word
      * @return
      */
-    bool find(const std::string& word) override {
+    bool find(const std::string& word) {
         return findInTrie(root, word);
     }
 
@@ -127,7 +125,6 @@ private:
     }
 
     /* The following functions have been taken from the AVLTree file */
-
     int height(Node* x) {
         if ( x == nullptr )
             return -1;

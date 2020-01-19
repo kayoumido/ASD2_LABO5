@@ -23,7 +23,7 @@ public:
         this->readFromFile(filename);
     }
 
-    void insert(std::string value) override {
+    void insert(const std::string& value) override {
         this->data.insert(value);
     }
 

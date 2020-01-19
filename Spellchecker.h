@@ -77,7 +77,7 @@ public:
             std::istringstream iss(line);
             std::string word;
             while (std::getline(iss, word, Spellchecker::DELIMITER)) {
-                // ignore any word that is empty or if it's surrounded by `'`
+                // ignore any word that is empty
                 if (word.empty())
                     continue;
 
@@ -151,7 +151,7 @@ private:
         // Loop through each letter of the inital word
         for (int i = 0; i < initialWord.size(); ++i) {
             std::string cpy;
-            // Loop throuhgh each alphabet letter
+            // Loop through each alphabet letter
             for (char letterToAdd = 'a'; letterToAdd <= 'z'; ++letterToAdd) {
                 // Generate the word with an extra letter in place of the current i pos letter
                 cpy = initialWord;
