@@ -2,8 +2,8 @@
  * Authors: Robin Demarta, Loïc Dessaules, Doran Kayoumi
  * File: SpellChecker.h
  * Date: 10.01.2019
- * Class description : Class that will use to correct a specific input file text with a specific Dict. An output file text
- *                     will be generate with all misspelled words and a suggestion list of correct words for it.
+ * Description : Parses a given text file for any words by looking for each word in a given Dictionary (Dict).
+ * 			If a mispelled word is found (i.e. it isn't in the dictionary) a list of suggestions is generated
  */
 
 #include <utility>
@@ -29,10 +29,14 @@ class Spellchecker {
     static const char DELIMITER = ' ';
 
     /**
-     * Sanatize a specific phrase passed in parameter
+     * Sanatize a given phrase
+     * i.e. replaces any non alphabetic characters by a space
+     * `'` are kept if they are surrounded by valid characters
+     *  e.g.:   it's --> valid
+     *          'A'  --> non valid
      *
-     * @param phrase The phrase to sanatize
-     * @return A clean phrase
+     * @param phrase to sanatize
+     * @return cleaned phrase
      */
     std::string sanitize(const std::string &phrase) {
         std::string cleaned = phrase;
@@ -64,8 +68,8 @@ public:
     Spellchecker(const std::string &toCorrect, Dict* dict) : toCorrect(toCorrect), dict(dict) {}
 
     /**
-     * Correct the file pass in class constructor with a specific Dict. An output.txt file will be generate with
-     * misspelled word and a list of correct word suggestions of it.
+     * Parses the input file to find any typos
+     * An `output.txt` file is generated containing all the typos w/ a list of suggestions
      */
     void correct() {
         std::vector<std::string> suggestions;
@@ -89,15 +93,15 @@ public:
             std::istringstream iss(line);
             std::string word;
             while (std::getline(iss, word, Spellchecker::DELIMITER)) {
-                // ignore any word that is empty
+                // ignore any empty words
                 if (word.empty())
                     continue;
 
-                // check the word is in the dictionary
-                if (!dict->find(word)) {
+                // check that the word is in the dictionary
+                if (!dict->find(word))  {
                     outputFile << "*" << word << "\n";
                     // check for word alternatives
-                    suggestions = checkMisspelledWord(word);
+                    suggestions = generateSuggestions(word);
 
                     // save suggestions in an output file
                     for(std::string& suggestion : suggestions){
@@ -111,138 +115,139 @@ public:
 private:
 
     /**
-     * Maybe the user type an extra letter, so we'll generate all word possibilities without 1 letter of the
-     * initial word.
+     * Generate suggestions by remove one character at a time.
      *
-     * @param initialWord The inital word to search suggestions for
-     * @return A Vector<String> Contains all suggestions
+     * @param word containing a typo
+     * @return list (vector) of suggestions
      */
-    std::vector<std::string> extraLetter(const std::string &initialWord) {
-        std::vector<std::string> wordsSuggestion;
+    std::vector<std::string> extraLetter(const std::string &word) {
+        std::vector<std::string> suggestions;
         std::string prefix = "1:";
         std::string cpy;
 
         // Loop through each letter of the inital word
-        for (int i = 0; i < initialWord.size(); ++i) {
+        for (int i = 0; i < word.size(); ++i) {
             // Generate the word without a letter at current i pos
-            cpy = initialWord;
+            cpy = word;
             cpy.erase(i, 1);
             if (dict->find(cpy)) {
-                wordsSuggestion.push_back(cpy.insert(0, prefix));
+                suggestions.push_back(cpy.insert(0, prefix));
             }
         }
 
-        return wordsSuggestion;
+        return suggestions;
     }
 
     /**
-     * Maybe the user forgot a letter, so we'll generate all word possibilities with one more letter inside
-     * the initial word.
+     * Generate suggestions by adding one character at a time.
      *
-     * @param initialWord The initial word to search suggestions for
-     * @return A Vector<String> Contains all suggestions
+     * @param word containing a typo
+     * @return list (vector) of suggestions
      */
-    std::vector<std::string> forgottenLetter(const std::string &initialWord) {
-        std::vector<std::string> wordsSuggestion;
+    std::vector<std::string> forgottenLetter(const std::string &word) {
+        std::vector<std::string> suggestions;
         std::string prefix = "2:";
         std::string cpy;
 
         // Loop through each letter of the inital word
-        for (int i = 0; i <= initialWord.size(); ++i) {
+        for (int i = 0; i <= word.size(); ++i) {
             // Loop through each alphabet letter
             for (char letterToAdd = 'a'; letterToAdd <= 'z'; ++letterToAdd) {
                 // Generate the word with an extra letter at current i pos
-                cpy = initialWord;
+                cpy = word;
                 std::string strLetter(1, letterToAdd);
                 cpy.insert(i, strLetter);
                 if (dict->find(cpy)) {
-                    wordsSuggestion.push_back(cpy.insert(0, prefix));
+                    suggestions.push_back(cpy.insert(0, prefix));
                 }
             }
 
             // Generate the word with an extra quote character at current i pos
-            cpy = initialWord;
+            cpy = word;
             cpy.insert(i, "'");
             if (dict->find(cpy)) {
-                wordsSuggestion.push_back(cpy.insert(0, prefix));
+                suggestions.push_back(cpy.insert(0, prefix));
             }
         }
 
-        return wordsSuggestion;
+        return suggestions;
     }
 
     /**
-     * Maybe the user has badly written, so we'll generate all word possibilities by replacing one letter of the
-     * initial word.
+     * Generate suggestions by replacing one character at a time.
      *
-     * @param initialWord The initial word to search suggestions for
-     * @return A Vector<String> Contains all suggestions
+     * @param word containing a typo
+     * @return list (vector) of suggestions
      */
-    std::vector<std::string> misspelled(const std::string &initialWord) {
-        std::vector<std::string> wordsSuggestion;
+    std::vector<std::string> misspelled(const std::string &word) {
+        std::vector<std::string> suggestions;
         std::string prefix = "3:";
         std::string cpy;
 
         // Loop through each letter of the inital word
-        for (int i = 0; i < initialWord.size(); ++i) {
+        for (int i = 0; i < word.size(); ++i) {
             // Loop through each alphabet letter
             for (char letterToAdd = 'a'; letterToAdd <= 'z'; ++letterToAdd) {
                 // Generate the word with an extra letter in place of the current i pos letter
-                cpy = initialWord;
+                cpy = word;
                 std::string strLetter(1, letterToAdd); // Cast letter in string
                 // Erase the letter at the i pos and add the new one
                 cpy.erase(i, 1);
                 cpy.insert(i, strLetter);
 
                 if (dict->find(cpy)) {
-                    wordsSuggestion.push_back(cpy.insert(0, prefix));
+                    suggestions.push_back(cpy.insert(0, prefix));
                 }
             }
 
             // Generate the word with an extra quote character in place of the current i pos letter
-            cpy = initialWord;
+            cpy = word;
             cpy.erase(i, 1);
             cpy.insert(i, "'");
             if (dict->find(cpy)) {
-                wordsSuggestion.push_back(cpy.insert(0, prefix));
+                suggestions.push_back(cpy.insert(0, prefix));
             }
         }
 
-        return wordsSuggestion;
+        return suggestions;
     }
 
     /**
-     * Maybe the user has swapped two letters, so we'll generate all word possibilities by swapping two letters of the
-     * initial word.
+     * Generate suggestions by swapping two adjacent letters
      *
-     * @param initialWord The initial word to search suggestions for
-     * @return A Vector<String> Contains all suggestions
+     * @param word containing a typo
+     * @return list (vector) of suggestions
      */
-    std::vector<std::string> swappedTwoLetters(const std::string &initialWord) {
-        std::vector<std::string> wordsSuggestion;
+    std::vector<std::string> swappedTwoLetters(const std::string &word) {
+        std::vector<std::string> suggestions;
         std::string prefix = "4:";
         std::string cpy;
 
         // Loop through each letter of the inital word
-        for (int i = 0; i < initialWord.size() - 1; ++i) {
+        for (int i = 0; i < word.size() - 1; ++i) {
             // Generate the word with a swap between letter at pos i and i+1
-            cpy = initialWord;
+            cpy = word;
             std::swap(cpy[i], cpy[i + 1]);
 
             if (dict->find(cpy)) {
-                wordsSuggestion.push_back(cpy.insert(0, prefix));
+                suggestions.push_back(cpy.insert(0, prefix));
             }
         }
 
-        return wordsSuggestion;
+        return suggestions;
     }
 
     /**
-     * Maybe the incorrect word has been misspelled so we'll generate all simple word suggestion possibilities
-     * @param word The word that is maybe misspelled
-     * @return A Vector<String> Contains all suggestions
+     * Generate suggestions for a word containing a typo
+     * e.g. :   Containing an extra letter
+     *          Missing a letter
+     *          Misspelled (wrong letter was used)
+     *          Two adjacent letters were swaped
+     *
+     * @param word containing a typo
+     * @return list (vector) of suggestions
      */
-    std::vector<std::string> checkMisspelledWord(const std::string &word) {
+    std::vector<std::string> generateSuggestions(const std::string &word) {
         std::vector<std::string> a = extraLetter(word);
         std::vector<std::string> b = forgottenLetter(word);
         std::vector<std::string> c = misspelled(word);

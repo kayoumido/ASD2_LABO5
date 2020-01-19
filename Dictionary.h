@@ -17,6 +17,12 @@ public:
     virtual bool find(const std::string &value) = 0;
 
 protected:
+
+    /**
+     * Read the content of a file
+     *
+     * @param filename to read
+     */
     void readFromFile(const std::string& filename) {
         std::ifstream s(filename);
 
@@ -27,6 +33,10 @@ protected:
         s.close();
     }
 
+    /**
+     * Read the content of a stream
+     * @param s stream to read
+     */
     void readFromStream(std::istream& s) {
         std::string value;
         while (getline(s, value)) {
@@ -34,7 +44,13 @@ protected:
         }
     }
 
-private :
+private:
+
+    /**
+     *
+     * @param word
+     * @return
+     */
     std::string toLower(std::string word){
         std::transform(word.begin(), word.end(), word.begin(), [](unsigned char c) {
             return std::tolower(c);
